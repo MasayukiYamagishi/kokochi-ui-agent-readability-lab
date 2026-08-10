@@ -1,0 +1,442 @@
+:root {
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  color: #17211b;
+  background: #f3f6f3;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  margin: 0;
+}
+
+button,
+a {
+  font: inherit;
+}
+
+.fixture-host {
+  display: flex;
+  height: 100vh;
+  height: 100dvh;
+  min-height: 32rem;
+  overflow: hidden;
+  flex-direction: column;
+  color: #17211b;
+  background:
+    radial-gradient(circle at top right, rgb(218 236 225 / 70%), transparent 32rem),
+    #f3f6f3;
+}
+
+.fixture-host a {
+  color: #235b3e;
+  font-weight: 700;
+  text-underline-offset: 0.2em;
+}
+
+.fixture-host a:focus-visible,
+.fixture-host button:focus-visible {
+  outline: 3px solid #8cc7a4;
+  outline-offset: 3px;
+}
+
+.fixture-host__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 0 0 auto;
+  gap: 1.5rem;
+  padding: 0.75rem clamp(1rem, 2.5vw, 2rem);
+  border-bottom: 1px solid #cad8ce;
+  background: rgb(243 246 243 / 92%);
+}
+
+.fixture-host__header h1 {
+  margin: 0.1rem 0 0.2rem;
+  font-size: clamp(1.35rem, 2vw, 1.75rem);
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+}
+
+.fixture-host__header p {
+  max-width: 48rem;
+  margin: 0;
+  color: #506058;
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+.fixture-host__not-found h1 {
+  margin: 0.25rem 0 0.5rem;
+  font-size: clamp(2rem, 4vw, 3.75rem);
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+
+.fixture-host__not-found p {
+  max-width: 48rem;
+  margin: 0;
+  color: #506058;
+  line-height: 1.6;
+}
+
+.fixture-host__header-copy {
+  min-width: 0;
+}
+
+.fixture-host__header-actions {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+}
+
+.fixture-host__back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #aebdb3;
+  border-radius: 0.5rem;
+  background: #fff;
+  text-decoration: none;
+}
+
+.fixture-host__back-link:hover {
+  border-color: #34704e;
+  background: #edf6f0;
+}
+
+.fixture-host__eyebrow {
+  color: #235b3e !important;
+  font-size: 0.65rem !important;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.fixture-host__workspace {
+  display: grid;
+  grid-template-columns:
+    var(--fixture-navigation-width) 0.875rem
+    minmax(0, 1fr);
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.fixture-host__navigation {
+  grid-column: 1;
+  min-width: 0;
+  padding: 1.25rem;
+  overflow-y: auto;
+  background: rgb(255 255 255 / 68%);
+}
+
+.fixture-host__splitter {
+  position: relative;
+  z-index: 2;
+  grid-column: 2;
+  width: 100%;
+  min-height: 0;
+  border-right: 1px solid #cad8ce;
+  border-left: 1px solid #cad8ce;
+  background: rgb(229 236 231 / 88%);
+  cursor: col-resize;
+  touch-action: none;
+  user-select: none;
+}
+
+.fixture-host__splitter::before {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  height: 2.75rem;
+  border-radius: 999px;
+  background: #8da497;
+  content: "";
+  transform: translate(-50%, -50%);
+}
+
+.fixture-host__splitter:hover,
+.fixture-host__splitter:focus-visible {
+  background: #d8e6dc;
+  outline: 2px solid #79a78c;
+  outline-offset: -2px;
+}
+
+.fixture-host__splitter--collapsed {
+  cursor: default;
+}
+
+.fixture-host__splitter--collapsed .fixture-host__splitter-toggle {
+  left: 1rem;
+}
+
+.fixture-host__splitter-toggle {
+  position: absolute;
+  top: 1rem;
+  left: 50%;
+  display: grid;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  place-items: center;
+  color: #235b3e;
+  border: 1px solid #aebdb3;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 0.2rem 0.5rem rgb(43 66 51 / 14%);
+  cursor: pointer;
+  transform: translateX(-50%);
+}
+
+.fixture-host__splitter-toggle:hover {
+  border-color: #34704e;
+  background: #edf6f0;
+}
+
+.fixture-host__splitter-toggle span {
+  font-size: 1.25rem;
+  line-height: 1;
+  transform: translateY(-0.05rem);
+}
+
+.fixture-host__mobile-navigation-toggle {
+  display: none;
+}
+
+.fixture-host__experiment + .fixture-host__experiment {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #cad8ce;
+}
+
+.fixture-host__experiment-heading,
+.fixture-host__preview-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.fixture-host__experiment h2,
+.fixture-host__preview h2,
+.fixture-host__empty h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.fixture-host__experiment-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0;
+  color: inherit;
+  text-align: left;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.fixture-host__experiment-toggle:hover {
+  color: #235b3e;
+}
+
+.fixture-host__experiment-indicator {
+  display: inline-grid;
+  width: 1rem;
+  place-items: center;
+  color: #506058;
+}
+
+.fixture-host code {
+  display: inline-block;
+  padding: 0.2rem 0.4rem;
+  color: #3f5147;
+  border: 1px solid #d8e2da;
+  border-radius: 0.35rem;
+  background: #eef3ef;
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.75rem;
+}
+
+.fixture-host__experiment-description,
+.fixture-host__empty p,
+.fixture-host__preview-empty p {
+  margin: 0.75rem 0 1rem;
+  color: #66736c;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.fixture-host__experiment ul {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fixture-host__experiment li {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.fixture-host__fixture {
+  display: grid;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 1rem;
+  color: inherit;
+  text-align: left;
+  border: 1px solid #ccd8cf;
+  border-radius: 0.75rem;
+  background: #fff;
+  cursor: pointer;
+}
+
+.fixture-host__fixture:hover {
+  border-color: #79a78c;
+}
+
+.fixture-host__fixture--selected {
+  border-color: #34704e;
+  box-shadow: 0 0 0 2px rgb(52 112 78 / 12%);
+}
+
+.fixture-host__fixture > span:first-child {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.fixture-host__fixture > span:last-child,
+.fixture-host__fixture small {
+  color: #66736c;
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.fixture-host__direct-link {
+  justify-self: end;
+  font-size: 0.8rem;
+}
+
+.fixture-host__preview {
+  display: flex;
+  grid-column: 3;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  padding: 1rem;
+  overflow: hidden;
+}
+
+.fixture-host__preview-heading {
+  align-items: flex-end;
+  margin-bottom: 0.75rem;
+}
+
+.fixture-host__preview-heading p {
+  margin: 0 0 0.25rem;
+  color: #66736c;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.fixture-host__preview iframe {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  border: 1px solid #bdcbc0;
+  border-radius: 0.75rem;
+  background: #fff;
+  box-shadow: 0 1rem 3rem rgb(43 66 51 / 10%);
+}
+
+.fixture-host__preview-empty {
+  display: grid;
+  min-height: 28rem;
+  place-content: center;
+  text-align: center;
+}
+
+.fixture-host__empty {
+  padding: 1rem;
+  border: 1px dashed #9caf9f;
+  border-radius: 0.75rem;
+}
+
+.fixture-host__not-found {
+  display: grid;
+  height: auto;
+  min-height: 100vh;
+  overflow: visible;
+  padding: 2rem;
+  place-content: center;
+  text-align: center;
+}
+
+.fixture-host__not-found a {
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 800px) {
+  .fixture-host {
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
+  }
+
+  .fixture-host__header {
+    align-items: flex-start;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .fixture-host__header-copy {
+    flex: 1 1 20rem;
+  }
+
+  .fixture-host__mobile-navigation-toggle {
+    display: inline-flex;
+    padding: 0.4rem 0.65rem;
+    color: #235b3e;
+    font-weight: 700;
+    border: 1px solid #aebdb3;
+    border-radius: 0.5rem;
+    background: #fff;
+    cursor: pointer;
+  }
+
+  .fixture-host__workspace {
+    display: block;
+  }
+
+  .fixture-host__navigation {
+    max-height: 22rem;
+    border-bottom: 1px solid #cad8ce;
+  }
+
+  .fixture-host__splitter {
+    display: none;
+  }
+
+  .fixture-host__preview {
+    min-height: 36rem;
+    overflow: visible;
+  }
+
+  .fixture-host__preview-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

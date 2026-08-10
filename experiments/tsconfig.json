@@ -1,0 +1,13 @@
+{
+  "extends": "../apps/fixtures-web/tsconfig.app.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "../apps/fixtures-web/node_modules/.tmp/tsconfig.experiment-fixtures.tsbuildinfo",
+    "types": ["node"],
+    "typeRoots": ["../apps/fixtures-web/node_modules/@types"]
+  },
+  "include": [
+    "fixture-types.d.ts",
+    "*/fixtures/**/*.tsx",
+    "*/tests/**/*.ts"
+  ]
+}

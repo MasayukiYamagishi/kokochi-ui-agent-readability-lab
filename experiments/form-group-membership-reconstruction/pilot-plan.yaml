@@ -1,0 +1,41 @@
+pilot_plan_schema_version: 1.2.0
+experiment_id: form-group-membership-reconstruction
+experiment_version: v2
+result_tier: pilot
+execution_backend: remote-nvidia-gpu
+approved_gpu:
+  vendor: NVIDIA
+  model: NVIDIA GeForce RTX 5070 Ti
+  driver_version: "610.88"
+  memory_mib: 16303
+fixture_ids:
+  - person-context-semantic-first
+  - person-context-presentation-first
+  - purpose-context-semantic-first
+  - purpose-context-presentation-first
+input_representations:
+  - dom-inner-html
+provider: ollama
+model_id: qwen3:4b
+approved_model_digest: 359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7
+approved_quantization: Q4_K_M
+approved_parameter_size: 4.0B
+generation_parameters:
+  temperature: 0.2
+  top_p: 0.95
+  top_k: 20
+  repeat_penalty: 1.0
+  num_ctx: 8192
+  num_predict: 1024
+  think: false
+repetitions:
+  - repetition_index: 0
+    seed: 301
+task_ids:
+  - person-group-membership
+approved_ollama_version: 0.32.6
+request_timeout_seconds: 60.0
+retry_policy: no-automatic-retry
+exclusion_policy: keep-all-planned-attempts
+expected_api_cost: JPY 0 using local Ollama only; the paid API hard cap is JPY 0, and electricity and hardware depreciation are excluded.
+

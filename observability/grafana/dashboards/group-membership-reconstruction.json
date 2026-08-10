@@ -1,0 +1,605 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "description": "タスク別のcontrol-group-membership F1、実行数、遅延、token、失敗、trace、構造化logを確認する。正本はwrite-onceのrun成果物であり、本画面は派生診断情報である。",
+  "editable": false,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [
+    {
+      "asDropdown": false,
+      "icon": "external link",
+      "includeVars": true,
+      "keepTime": true,
+      "tags": [],
+      "targetBlank": true,
+      "title": "Fixture一覧",
+      "tooltip": "選択中の実験fixtureを開く",
+      "type": "link",
+      "url": "http://localhost:5173/experiments/${experiment_id}"
+    }
+  ],
+  "panels": [
+    {
+      "description": "ダッシュボードは診断用の派生表示であり、数値の正本はwrite-once成果物である。",
+      "gridPos": { "h": 4, "w": 24, "x": 0, "y": 0 },
+      "id": 1,
+      "options": {
+        "content": "### 正本と選択範囲\n\n- 実験: `experiments/${experiment_id}/`\n- run正本: `experiments/${experiment_id}/results/<tier>/`\n- task: `${task_id}`\n- fixture: `${fixture_id}`\n- 入力表現: `${input_representation}`\n\n記事の結果値は`run.json`と`outputs/score.json`から再集計し、この画面はOpenTelemetryの到達・相関と傾向の確認に使う。",
+        "mode": "markdown"
+      },
+      "title": "正本とフィルター",
+      "type": "text"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "description": "選択期間内に到達した終端run数。今回の正式実験では全フィルター選択時に8を期待する。",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "decimals": 0,
+          "mappings": [],
+          "noValue": "runなし",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "green", "value": 8 }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 5, "x": 0, "y": 4 },
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "editorMode": "code",
+          "expr": "sum(max_over_time(kokochi_experiment_run_count_total{kokochi_experiment_id=~\"${experiment_id:regex}\",kokochi_experiment_version=~\"${experiment_version:regex}\",kokochi_task_id=~\"${task_id:regex}\",kokochi_fixture_id=~\"${fixture_id:regex}\",kokochi_input_representation=~\"${input_representation:regex}\",gen_ai_request_model=~\"${model_id:regex}\"}[$__range]))",
+          "instant": true,
+          "legendFormat": "run数",
+          "range": false,
+          "refId": "A"
+        }
+      ],
+      "title": "実行run数",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "description": "task・fixture・入力表現ごとの実行観測数。成功・失敗の双方を含み、1反復は各行1、今回の正式実験完了時は各行2になる。",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "decimals": 0,
+          "mappings": [],
+          "noValue": "観測なし",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "green", "value": 2 }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 19, "x": 5, "y": 4 },
+      "id": 3,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": ["sum"],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "editorMode": "code",
+          "expr": "sum by (kokochi_task_id, kokochi_fixture_id, kokochi_input_representation) (max_over_time(kokochi_experiment_run_count_total{kokochi_experiment_id=~\"${experiment_id:regex}\",kokochi_experiment_version=~\"${experiment_version:regex}\",kokochi_task_id=~\"${task_id:regex}\",kokochi_fixture_id=~\"${fixture_id:regex}\",kokochi_input_representation=~\"${input_representation:regex}\",gen_ai_request_model=~\"${model_id:regex}\"}[$__range]))",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "{{kokochi_task_id}} / {{kokochi_fixture_id}} / {{kokochi_input_representation}}",
+          "range": false,
+          "refId": "A"
+        }
+      ],
+      "title": "4 fixtureの実行観測数",
+      "type": "table"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "description": "正本scoreから記録されたcontrol-group-membership F1の平均。task・fixture条件・入力表現を分離する。",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "continuous-GrYlRd" },
+          "decimals": 3,
+          "mappings": [],
+          "max": 1,
+          "min": 0,
+          "noValue": "F1なし",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "yellow", "value": 0.5 },
+              { "color": "green", "value": 0.8 }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 7, "w": 14, "x": 0, "y": 9 },
+      "id": 4,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": ["mean"],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum by (kokochi_task_id, kokochi_fixture_id, kokochi_input_representation) (max_over_time(kokochi_evaluation_group_membership_f1_sum{kokochi_experiment_id=~\"${experiment_id:regex}\",kokochi_experiment_version=~\"${experiment_version:regex}\",kokochi_task_id=~\"${task_id:regex}\",kokochi_fixture_id=~\"${fixture_id:regex}\",kokochi_input_representation=~\"${input_representation:regex}\",gen_ai_request_model=~\"${model_id:regex}\"}[$__range])) / sum by (kokochi_task_id, kokochi_fixture_id, kokochi_input_representation) (max_over_time(kokochi_evaluation_group_membership_f1_count{kokochi_experiment_id=~\"${experiment_id:regex}\",kokochi_experiment_version=~\"${experiment_version:regex}\",kokochi_task_id=~\"${task_id:regex}\",kokochi_fixture_id=~\"${fixture_id:regex}\",kokochi_input_representation=~\"${input_representation:regex}\",gen_ai_request_model=~\"${model_id:regex}\"}[$__range]))",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "{{kokochi_task_id}} / {{kokochi_fixture_id}} / {{kokochi_input_representation}}",
+          "range": false,
+          "refId": "A"
+        }
+      ],
+      "title": "タスク別 F1",
+      "type": "table"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "description": "完全一致とschema-validの割合。invalid応答を予定分母から除外しない。",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "decimals": 3,
+          "mappings": [],
+          "max": 1,
+          "min": 0,
+          "noValue": "評価なし",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "green", "value": 0.8 }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 7, "w": 10, "x": 14, "y": 9 },
+      "id": 5,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": ["mean"],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "editorMode": "code",
+          "expr": "sum by (kokochi_task_id) (max_over_time(kokochi_evaluation_complete_match_count_total{kokochi_experiment_id=~\"${experiment_id:regex}\",kokochi_task_id=~\"${task_id:regex}\",kokochi_evaluation_outcome=\"true\"}[$__range])) / sum by (kokochi_task_id) (max_over_time(kokochi_evaluation_complete_match_count_total{kokochi_experiment_id=~\"${experiment_id:regex}\",kokochi_task_id=~\"${task_id:regex}\"}[$__range]))",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "完全一致 {{kokochi_task_id}}",
+          "range": false,
+          "refId": "A"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "editorMode": "code",
+          "expr": "sum by (kokochi_task_id) (max_over_time(kokochi_evaluation_schema_valid_count_total{kokochi_experiment_id=~\"${experiment_id:regex}\",kokochi_task_id=~\"${task_id:regex}\",kokochi_evaluation_outcome=\"true\"}[$__range])) / sum by (kokochi_task_id) (max_over_time(kokochi_evaluation_schema_valid_count_total{kokochi_experiment_id=~\"${experiment_id:regex}\",kokochi_task_id=~\"${task_id:regex}\"}[$__range]))",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "schema-valid {{kokochi_task_id}}",
+          "range": false,
+          "refId": "B"
+        }
+      ],
+      "title": "完全一致率とschema-valid率",
+      "type": "table"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "description": "task・fixture・入力表現ごとのrun全体とOllama推論の平均遅延。",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "decimals": 3,
+          "mappings": [],
+          "noValue": "遅延なし",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{ "color": "green", "value": null }]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 16 },
+      "id": 6,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": ["mean"],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "editorMode": "code",
+          "expr": "sum by (kokochi_task_id, kokochi_fixture_id, kokochi_input_representation) (max_over_time(kokochi_experiment_run_duration_seconds_sum{kokochi_experiment_id=~\"${experiment_id:regex}\",kokochi_task_id=~\"${task_id:regex}\",kokochi_fixture_id=~\"${fixture_id:regex}\",kokochi_input_representation=~\"${input_representation:regex}\"}[$__range])) / sum by (kokochi_task_id, kokochi_fixture_id, kokochi_input_representation) (max_over_time(kokochi_experiment_run_duration_seconds_count{kokochi_experiment_id=~\"${experiment_id:regex}\",kokochi_task_id=~\"${task_id:regex}\",kokochi_fixture_id=~\"${fixture_id:regex}\",kokochi_input_representation=~\"${input_representation:regex}\"}[$__range]))",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "run {{kokochi_task_id}} / {{kokochi_fixture_id}} / {{kokochi_input_representation}}",
+          "range": false,
+          "refId": "A"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "editorMode": "code",
+          "expr": "sum by (kokochi_task_id, kokochi_fixture_id, kokochi_input_representation) (max_over_time(gen_ai_client_operation_duration_seconds_sum{kokochi_experiment_id=~\"${experiment_id:regex}\",kokochi_task_id=~\"${task_id:regex}\",kokochi_fixture_id=~\"${fixture_id:regex}\",kokochi_input_representation=~\"${input_representation:regex}\"}[$__range])) / sum by (kokochi_task_id, kokochi_fixture_id, kokochi_input_representation) (max_over_time(gen_ai_client_operation_duration_seconds_count{kokochi_experiment_id=~\"${experiment_id:regex}\",kokochi_task_id=~\"${task_id:regex}\",kokochi_fixture_id=~\"${fixture_id:regex}\",kokochi_input_representation=~\"${input_representation:regex}\"}[$__range]))",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "推論 {{kokochi_task_id}} / {{kokochi_fixture_id}} / {{kokochi_input_representation}}",
+          "range": false,
+          "refId": "B"
+        }
+      ],
+      "title": "タスク別の遅延",
+      "type": "table"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "description": "provider報告のinput/output token平均。推定input tokenとは混同しない。",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "decimals": 1,
+          "mappings": [],
+          "noValue": "tokenなし",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{ "color": "green", "value": null }]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 16 },
+      "id": 7,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": ["mean"],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "editorMode": "code",
+          "expr": "sum by (kokochi_task_id, gen_ai_token_type) (max_over_time(gen_ai_client_token_usage_sum{kokochi_experiment_id=~\"${experiment_id:regex}\",kokochi_task_id=~\"${task_id:regex}\",gen_ai_request_model=~\"${model_id:regex}\"}[$__range])) / sum by (kokochi_task_id, gen_ai_token_type) (max_over_time(gen_ai_client_token_usage_count{kokochi_experiment_id=~\"${experiment_id:regex}\",kokochi_task_id=~\"${task_id:regex}\",gen_ai_request_model=~\"${model_id:regex}\"}[$__range]))",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "{{kokochi_task_id}} / {{gen_ai_token_type}}",
+          "range": false,
+          "refId": "A"
+        }
+      ],
+      "title": "タスク別の入出力token",
+      "type": "table"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "description": "run status、failure stage、error type別の件数。失敗runも予定分母に残る。",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "decimals": 0,
+          "mappings": [],
+          "noValue": "失敗なし",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 1 }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 24, "x": 0, "y": 23 },
+      "id": 8,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": ["sum"],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "editorMode": "code",
+          "expr": "sum by (kokochi_task_id, kokochi_run_status, kokochi_failure_stage, error_type) (max_over_time(kokochi_experiment_run_count_total{kokochi_experiment_id=~\"${experiment_id:regex}\",kokochi_task_id=~\"${task_id:regex}\",kokochi_run_status=\"failure\"}[$__range]))",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "{{kokochi_task_id}} / {{kokochi_failure_stage}} / {{error_type}}",
+          "range": false,
+          "refId": "A"
+        }
+      ],
+      "title": "失敗の分類",
+      "type": "table"
+    },
+    {
+      "datasource": { "type": "tempo", "uid": "tempo" },
+      "description": "選択したtaskを含むexperiment.run trace。子spanから推論、正規化、採点、保存を確認できる。",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "noValue": "traceなし",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{ "color": "green", "value": null }]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 7, "w": 24, "x": 0, "y": 28 },
+      "id": 9,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": ["sum"],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "targets": [
+        {
+          "datasource": { "type": "tempo", "uid": "tempo" },
+          "limit": 50,
+          "query": "{ name = \"experiment.run\" && span.\"kokochi.experiment.id\" =~ \"${experiment_id:regex}\" && span.\"kokochi.experiment.version\" =~ \"${experiment_version:regex}\" && span.\"kokochi.task.id\" =~ \"${task_id:regex}\" && span.\"kokochi.fixture.id\" =~ \"${fixture_id:regex}\" && span.\"kokochi.input.representation\" =~ \"${input_representation:regex}\" && span.\"gen_ai.request.model\" =~ \"${model_id:regex}\" } with (most_recent=true)",
+          "queryType": "traceql",
+          "refId": "A",
+          "tableType": "traces"
+        }
+      ],
+      "title": "runからtraceとspanを確認",
+      "type": "table"
+    },
+    {
+      "datasource": { "type": "loki", "uid": "loki" },
+      "description": "同じtaskフィルターを適用した構造化log。raw prompt、fixture入力、model応答は含めない。",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "noValue": "logなし",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{ "color": "green", "value": null }]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 35 },
+      "id": 10,
+      "options": {
+        "dedupStrategy": "none",
+        "enableInfiniteScrolling": false,
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": true,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
+      },
+      "targets": [
+        {
+          "datasource": { "type": "loki", "uid": "loki" },
+          "direction": "backward",
+          "editorMode": "code",
+          "expr": "{service_name=\"kokochi-ui-agent-readability-lab\"} | trace_id != \"\" | kokochi_experiment_id =~ \"${experiment_id:regex}\" | kokochi_experiment_version =~ \"${experiment_version:regex}\" | kokochi_task_id =~ \"${task_id:regex}\" | kokochi_fixture_id =~ \"${fixture_id:regex}\" | kokochi_input_representation =~ \"${input_representation:regex}\" | gen_ai_request_model =~ \"${model_id:regex}\"",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "taskで相関した構造化log",
+      "type": "logs"
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 41,
+  "tags": ["kokochi", "experiment", "task-aware", "opentelemetry"],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": true,
+          "text": "form-group-membership-reconstruction",
+          "value": "form-group-membership-reconstruction"
+        },
+        "datasource": { "type": "prometheus", "uid": "prometheus" },
+        "definition": "label_values(kokochi_experiment_run_count_total, kokochi_experiment_id)",
+        "includeAll": false,
+        "label": "実験",
+        "multi": false,
+        "name": "experiment_id",
+        "options": [],
+        "query": {
+          "query": "label_values(kokochi_experiment_run_count_total, kokochi_experiment_id)",
+          "refId": "TaskExperiment"
+        },
+        "refresh": 2,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "allValue": ".*",
+        "current": { "selected": true, "text": ["All"], "value": ["$__all"] },
+        "datasource": { "type": "prometheus", "uid": "prometheus" },
+        "definition": "label_values(kokochi_experiment_run_count_total{kokochi_experiment_id=~\"${experiment_id:regex}\"}, kokochi_experiment_version)",
+        "includeAll": true,
+        "label": "実験version",
+        "multi": true,
+        "name": "experiment_version",
+        "options": [],
+        "query": {
+          "query": "label_values(kokochi_experiment_run_count_total{kokochi_experiment_id=~\"${experiment_id:regex}\"}, kokochi_experiment_version)",
+          "refId": "TaskExperimentVersion"
+        },
+        "refresh": 2,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "allValue": ".*",
+        "current": { "selected": true, "text": ["All"], "value": ["$__all"] },
+        "datasource": { "type": "prometheus", "uid": "prometheus" },
+        "definition": "label_values(kokochi_experiment_run_count_total{kokochi_experiment_id=~\"${experiment_id:regex}\"}, kokochi_task_id)",
+        "includeAll": true,
+        "label": "task",
+        "multi": true,
+        "name": "task_id",
+        "options": [],
+        "query": {
+          "query": "label_values(kokochi_experiment_run_count_total{kokochi_experiment_id=~\"${experiment_id:regex}\"}, kokochi_task_id)",
+          "refId": "TaskId"
+        },
+        "refresh": 2,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "allValue": ".*",
+        "current": { "selected": true, "text": ["All"], "value": ["$__all"] },
+        "datasource": { "type": "prometheus", "uid": "prometheus" },
+        "definition": "label_values(kokochi_experiment_run_count_total{kokochi_experiment_id=~\"${experiment_id:regex}\",kokochi_task_id=~\"${task_id:regex}\"}, kokochi_fixture_id)",
+        "includeAll": true,
+        "label": "fixture条件",
+        "multi": true,
+        "name": "fixture_id",
+        "options": [],
+        "query": {
+          "query": "label_values(kokochi_experiment_run_count_total{kokochi_experiment_id=~\"${experiment_id:regex}\",kokochi_task_id=~\"${task_id:regex}\"}, kokochi_fixture_id)",
+          "refId": "TaskFixture"
+        },
+        "refresh": 2,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "allValue": ".*",
+        "current": { "selected": true, "text": ["All"], "value": ["$__all"] },
+        "datasource": { "type": "prometheus", "uid": "prometheus" },
+        "definition": "label_values(kokochi_experiment_run_count_total{kokochi_experiment_id=~\"${experiment_id:regex}\"}, kokochi_input_representation)",
+        "includeAll": true,
+        "label": "入力表現",
+        "multi": true,
+        "name": "input_representation",
+        "options": [],
+        "query": {
+          "query": "label_values(kokochi_experiment_run_count_total{kokochi_experiment_id=~\"${experiment_id:regex}\"}, kokochi_input_representation)",
+          "refId": "TaskInput"
+        },
+        "refresh": 2,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "allValue": ".*",
+        "current": { "selected": true, "text": ["All"], "value": ["$__all"] },
+        "datasource": { "type": "prometheus", "uid": "prometheus" },
+        "definition": "label_values(kokochi_experiment_run_count_total{kokochi_experiment_id=~\"${experiment_id:regex}\"}, gen_ai_request_model)",
+        "includeAll": true,
+        "label": "model",
+        "multi": true,
+        "name": "model_id",
+        "options": [],
+        "query": {
+          "query": "label_values(kokochi_experiment_run_count_total{kokochi_experiment_id=~\"${experiment_id:regex}\"}, gen_ai_request_model)",
+          "refId": "TaskModel"
+        },
+        "refresh": 2,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
+      }
+    ]
+  },
+  "time": { "from": "now-24h", "to": "now" },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "KOKOCHI タスク別テレメトリー",
+  "uid": "kokochi-task-telemetry",
+  "version": 1,
+  "weekStart": "monday"
+}
+

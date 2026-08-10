@@ -1,0 +1,224 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "018f05d2-1ca3-7a4b-9c2d-123456789abc",
+  "trace_id": "0123456789abcdef0123456789abcdef",
+  "recorded_at": "2026-07-30T01:02:06Z",
+  "git": {
+    "commit_sha": "d932cf7d932cf7d932cf7d932cf7d932cf7d932c",
+    "is_dirty": false
+  },
+  "environment": {
+    "operating_system": {
+      "name": "Ubuntu",
+      "version": "24.04",
+      "kernel_name": "Linux",
+      "kernel_release": "6.6.87.2-microsoft-standard-WSL2",
+      "kernel_version": "#1 SMP PREEMPT_DYNAMIC"
+    },
+    "python_version": "3.13.5",
+    "node_version": "v24.18.0",
+    "pnpm_version": "11.15.1",
+    "playwright_version": "1.55.0",
+    "browser": {
+      "name": "chromium",
+      "version": "140.0.7339.16",
+      "revision": "1187"
+    }
+  },
+  "experiment": {
+    "experiment_id": "label-clarity",
+    "version": "v1",
+    "source_path": "config.yaml",
+    "definition_artifact_id": "experiment-definition"
+  },
+  "fixture": {
+    "fixture_id": "semantic-form",
+    "version": "v1",
+    "source_path": "fixtures/semantic-form.tsx",
+    "definition_artifact_id": "fixture-definition"
+  },
+  "model": {
+    "provider": "ollama",
+    "model_id": "example-model:latest",
+    "model_digest": "sha256:example",
+    "model_digest_missing_reason": null,
+    "quantization": "Q4_K_M",
+    "quantization_missing_reason": null,
+    "configuration_artifact_id": "model-configuration"
+  },
+  "prompt": {
+    "prompt_id": "field-label",
+    "version": "v1",
+    "source_path": "prompts/v1.md",
+    "prompt_artifact_id": "prompt"
+  },
+  "ground_truth": {
+    "version": "v1",
+    "source_path": "ground-truth/v1.json",
+    "artifact_id": "ground-truth"
+  },
+  "input_collection": {
+    "collected_at": "2026-07-30T01:02:03Z",
+    "representation": "aria-snapshot",
+    "browser_context": {
+      "viewport_width": 1280,
+      "viewport_height": 800,
+      "device_scale_factor": 1.0,
+      "locale": "en-US",
+      "timezone": "UTC",
+      "color_scheme": "light",
+      "reduced_motion": "reduce"
+    },
+    "artifact_ids": [
+      "collected-input"
+    ]
+  },
+  "provider_response": {
+    "provider_request_id": "provider-request-1",
+    "received_at": "2026-07-30T01:02:05Z",
+    "latency_ms": 1250.5,
+    "token_usage": {
+      "input_tokens": 42,
+      "output_tokens": 8,
+      "total_tokens": 50
+    },
+    "token_usage_missing_reason": null,
+    "estimated_token_usage": null,
+    "raw_response_artifact_id": "raw-provider-response"
+  },
+  "normalized_response": {
+    "artifact_id": "normalized-response"
+  },
+  "score": {
+    "scorer_id": "exact-match",
+    "scorer_version": "v1",
+    "artifact_id": "score-result"
+  },
+  "execution": {
+    "status": "completed",
+    "started_at": "2026-07-30T01:02:03Z",
+    "completed_at": "2026-07-30T01:02:05Z",
+    "repetition_index": 0,
+    "repetition_count": 3,
+    "seed": {
+      "provider_parameter": "seed",
+      "requested_value": 42,
+      "reported_value": 42,
+      "support_status": "supported"
+    },
+    "failure_stage": null,
+    "error_code": null,
+    "retryable": null,
+    "error_artifact_id": null
+  },
+  "artifacts": [
+    {
+      "artifact_id": "experiment-definition",
+      "role": "configuration",
+      "kind": "experiment-definition",
+      "relative_path": "sources/config.yaml",
+      "media_type": "application/yaml",
+      "byte_length": 1142,
+      "content_hash": {
+        "algorithm": "sha256",
+        "digest": "fbac0ba8ee9a0ea121acf4c13e59d4b43b24ec0aa2479eb33ebbdef7262a19f4"
+      }
+    },
+    {
+      "artifact_id": "fixture-definition",
+      "role": "configuration",
+      "kind": "fixture-definition",
+      "relative_path": "sources/fixtures/semantic-form.tsx",
+      "media_type": "text/typescript",
+      "byte_length": 48,
+      "content_hash": {
+        "algorithm": "sha256",
+        "digest": "5ebcc5e737087025b69d2d79ca24a478d838117be021326fad371e2e836108cd"
+      }
+    },
+    {
+      "artifact_id": "model-configuration",
+      "role": "configuration",
+      "kind": "model-configuration",
+      "relative_path": "config/model.json",
+      "media_type": "application/json",
+      "byte_length": 18,
+      "content_hash": {
+        "algorithm": "sha256",
+        "digest": "ae40a217c1c4002e9358f0f6597a349acaace0cfb95dc53db7ce646d57a56271"
+      }
+    },
+    {
+      "artifact_id": "prompt",
+      "role": "configuration",
+      "kind": "prompt",
+      "relative_path": "sources/prompts/v1.md",
+      "media_type": "text/markdown",
+      "byte_length": 38,
+      "content_hash": {
+        "algorithm": "sha256",
+        "digest": "601caf4c8de8196fb453f3f4d6dda8e97cf462e4a682ec615426db0b2de52948"
+      }
+    },
+    {
+      "artifact_id": "ground-truth",
+      "role": "configuration",
+      "kind": "ground-truth",
+      "relative_path": "sources/ground-truth/v1.json",
+      "media_type": "application/json",
+      "byte_length": 35,
+      "content_hash": {
+        "algorithm": "sha256",
+        "digest": "001353a89ee9e8a5b9307df7e4290b6e19e264d815f110d06f9bf06fe292357b"
+      }
+    },
+    {
+      "artifact_id": "collected-input",
+      "role": "input",
+      "kind": "aria-snapshot",
+      "relative_path": "inputs/aria-snapshot.yml",
+      "media_type": "application/yaml",
+      "byte_length": 26,
+      "content_hash": {
+        "algorithm": "sha256",
+        "digest": "651427234c47ccf46a4dd04fe10ad58deb9be0e998de54a33ee707e2a398b8e1"
+      }
+    },
+    {
+      "artifact_id": "raw-provider-response",
+      "role": "output",
+      "kind": "provider-response",
+      "relative_path": "outputs/provider-response.json",
+      "media_type": "application/json",
+      "byte_length": 29,
+      "content_hash": {
+        "algorithm": "sha256",
+        "digest": "043cea82482b5ea364effd286b17516203e7e475b4d1685b4e59f80fd7a882a1"
+      }
+    },
+    {
+      "artifact_id": "normalized-response",
+      "role": "output",
+      "kind": "normalized-response",
+      "relative_path": "outputs/normalized-response.json",
+      "media_type": "application/json",
+      "byte_length": 26,
+      "content_hash": {
+        "algorithm": "sha256",
+        "digest": "e2dd5a8051c3c1d792348d2a6321c34773a3ae178a600cf8aba614e943362992"
+      }
+    },
+    {
+      "artifact_id": "score-result",
+      "role": "output",
+      "kind": "score-result",
+      "relative_path": "outputs/score.json",
+      "media_type": "application/json",
+      "byte_length": 29,
+      "content_hash": {
+        "algorithm": "sha256",
+        "digest": "58ef0303b51d1be7d046a2caf5d521a59f95deba16616657394794d3fc7c5a0d"
+      }
+    }
+  ]
+}

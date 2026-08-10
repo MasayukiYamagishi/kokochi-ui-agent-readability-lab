@@ -1,0 +1,114 @@
+config_schema_version: 1.1.0
+experiment_id: form-group-membership-reconstruction
+experiment_version: v2
+title: Form group membership reconstruction
+design:
+  research_question: Does programmatically determinable form-group structure improve an LLM's ability to reconstruct every control-to-group membership from HTML?
+  hypothesis: Semantic-first group containment improves complete control-to-group reconstruction compared with a visually equivalent presentation-first structure.
+  independent_variable: Semantic-first fieldset and legend containment versus presentation-first sibling headings and layout rows without one element containing a conceptual group.
+  controlled_variables:
+    - Visible text, eligible controls, individual label associations, control types, relevant attributes, and control order within each paired fixture
+    - Presentation-row composition, CSS, rendered layout, viewport, and screenshot-equivalence procedure
+    - One neutral reconstruction instruction shared by every fixture and no task-specific target hint
+    - Model identifier, model artifact, generation settings, prompt version, output schema, ground-truth version, and scorer version
+    - Fixture-root DOM serialization and fixture-scoped accessibility-tree capture procedures
+    - Locale ja-JP, timezone Asia/Tokyo, fixed Chromium revision, light color scheme, and no-preference reduced motion
+    - Initial empty form state, deterministic local postal completion, and local-only submission behavior
+  model_inputs:
+    - Primary stratum dom-inner-html serializes only fixture-root innerHTML and excludes host metadata and fixture identifiers
+    - Secondary stratum accessibility-tree captures a browser accessibility snapshot scoped to the same fixture root
+    - The prompt asks for complete control-to-group reconstruction without naming a target group
+    - Screenshots verify visual equivalence and are not model input
+  expected_output_schema:
+    type: object
+    additionalProperties: false
+    required:
+      - memberships
+      - ungrouped_control_indices
+    properties:
+      memberships:
+        type: array
+        items:
+          type: object
+          additionalProperties: false
+          required:
+            - control_index
+            - group_label
+          properties:
+            control_index:
+              type: integer
+              minimum: 1
+            group_label:
+              type: string
+              minLength: 1
+      ungrouped_control_indices:
+        type: array
+        items:
+          type: integer
+          minimum: 1
+  scoring_method: Control-to-group relation F1 is primary. Precision, recall, exact match, response completeness, coverage, duplicate indices, out-of-range indices, unknown group labels, missing controls, and per-group F1 are secondary metrics. Invalid responses receive F1 0 and remain in planned-run denominators.
+  limitations:
+    - Two synthetic Japanese form families and two aggregation tasks do not establish generalization to other languages, domains, or layouts
+    - One quantized local qwen3:4b artifact does not establish cross-model transfer
+    - The structural contrast combines containment, fieldset and legend, and presentation-first markup rather than isolating one tag
+    - DOM order, visible headings, and text proximity remain usable cues in presentation-first fixtures
+    - Utility classes and unequal serialized token counts may act as noise or layout cues
+    - DOM and accessibility-tree inputs do not evaluate screenshots or multimodal interaction
+    - Accessibility-tree output depends on the fixed Chromium implementation
+    - Model input uses only the initial empty state and does not evaluate an interactive journey
+    - Local form handling does not reproduce production backend or security boundaries
+    - Dynamic, conditional, repeated, disabled, validation-error, and multi-page forms are out of scope
+    - Ground truth assigns every eligible control to one visible group
+    - Repetitions measure seed variation rather than variation across independently designed forms
+    - Telemetry records evidence and outcomes but cannot establish the model's internal reasoning
+execution:
+  models:
+    - provider: ollama
+      model_id: "qwen3:4b"
+  repetitions: 2
+  randomness_controls: Match two official seeds across semantic-first and presentation-first conditions for each task. The two-request pilot uses a separate seed and no automatic retry.
+  expected_api_cost: JPY 0 using local Ollama only; the paid API hard cap is JPY 0, and electricity and hardware depreciation are excluded.
+fixtures:
+  - fixture_id: person-context-semantic-first
+    fixture_version: v1
+    source_path: fixtures/person-context-semantic-first.tsx
+    condition: Person context with programmatically determinable group containment
+    independent_variable_value: semantic-first
+  - fixture_id: person-context-presentation-first
+    fixture_version: v1
+    source_path: fixtures/person-context-presentation-first.tsx
+    condition: Person context with headings and presentation rows only
+    independent_variable_value: presentation-first
+  - fixture_id: purpose-context-semantic-first
+    fixture_version: v1
+    source_path: fixtures/purpose-context-semantic-first.tsx
+    condition: Purpose context with programmatically determinable group containment
+    independent_variable_value: semantic-first
+  - fixture_id: purpose-context-presentation-first
+    fixture_version: v1
+    source_path: fixtures/purpose-context-presentation-first.tsx
+    condition: Purpose context with headings and presentation rows only
+    independent_variable_value: presentation-first
+tasks:
+  - task_id: person-group-membership
+    fixture_ids:
+      - person-context-semantic-first
+      - person-context-presentation-first
+    instruction: 人物情報フォームの全コントロールについて、画面上の所属グループを復元してください。
+  - task_id: purpose-group-membership
+    fixture_ids:
+      - purpose-context-semantic-first
+      - purpose-context-presentation-first
+    instruction: 用途別フォームの全コントロールについて、画面上の所属グループを復元してください。
+prompt:
+  prompt_id: group-membership-reconstruction
+  prompt_version: v1
+  source_path: prompts/v1.md
+  approved_body_sha256: f6ccdb38ea5f20ad9b964c6b2b79dab2c8e719a838669eff7a151dfaaa212abc
+ground_truth:
+  ground_truth_version: v1
+  source_path: ground-truth/v1.json
+  approved_sha256: f2e0ca7a70a0b4d3b61be1bce1c8b1af40358e5e7db298e688588a04263f01b6
+scorer:
+  scorer_id: control-group-membership-f1
+  scorer_version: v1

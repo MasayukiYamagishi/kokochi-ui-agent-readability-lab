@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0.0",
+  "diagnostic_id": "group-membership",
+  "ground_truth_version": "v1",
+  "normalization": {
+    "unicode_form": "NFKC",
+    "strip_whitespace": true,
+    "collapse_whitespace": true,
+    "casefold": false
+  },
+  "tasks": [
+    {
+      "task_id": "person-group-membership",
+      "fixture_ids": [
+        "person-context-semantic-first",
+        "person-context-presentation-first"
+      ],
+      "eligible_control_indices": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+      "groups": [
+        {
+          "group_label": "あなたの情報",
+          "control_indices": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+        },
+        {
+          "group_label": "緊急連絡先",
+          "control_indices": [13, 14, 15, 16, 17, 18]
+        }
+      ]
+    },
+    {
+      "task_id": "purpose-group-membership",
+      "fixture_ids": [
+        "purpose-context-semantic-first",
+        "purpose-context-presentation-first"
+      ],
+      "eligible_control_indices": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
+      "groups": [
+        {
+          "group_label": "配送先",
+          "control_indices": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+        },
+        {
+          "group_label": "請求先",
+          "control_indices": [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
+        },
+        {
+          "group_label": "お問い合わせ先",
+          "control_indices": [24, 25, 26, 27, 28, 29]
+        }
+      ]
+    }
+  ]
+}
+

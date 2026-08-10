@@ -1,0 +1,6 @@
+services:
+  otel-collector:
+    command:
+      - "--config=/etc/otelcol/config.debug.yaml"
+    volumes:
+      - ./collector-config.debug.yaml:/etc/otelcol/config.debug.yaml:ro

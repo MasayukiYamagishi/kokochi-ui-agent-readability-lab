@@ -1,0 +1,28 @@
+{
+  "name": "kokochi-ui-agent-readability-lab",
+  "version": "0.1.0",
+  "description": "",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "dev": "pnpm --filter fixtures-web dev",
+    "build": "pnpm --filter fixtures-web build",
+    "preview": "pnpm --filter fixtures-web preview",
+    "observability:config": "docker compose -f observability/otel/compose.yaml config --quiet && docker compose -f observability/otel/compose.yaml -f observability/otel/compose.debug.yaml config --quiet",
+    "observability:task-results": "uv run python observability/grafana/capture_task_results.py",
+    "observability:smoke": "uv run python observability/otel/smoke_test.py",
+    "pilot:plan": "uv run python scripts/run_pilot.py plan",
+    "validate:repository": "uv run python scripts/validate_repository.py",
+    "test": "pnpm observability:config && pnpm --recursive --filter=!kokochi-ui-agent-readability-lab test && uv run pytest -v",
+    "test:external": "uv run pytest -v --run-external tests/external",
+    "typecheck": "pnpm -r typecheck"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "PolyForm-Noncommercial-1.0.0",
+  "type": "module",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "packageManager": "pnpm@11.15.1+sha512.81350b07e53c9538a02f1f2303b4290fa2d7be04e56e2a970c4cc4b417dc761de196edabd49d55c7dc9580db81007c44143e4e3d7e462b3000d23c255122d065"
+}

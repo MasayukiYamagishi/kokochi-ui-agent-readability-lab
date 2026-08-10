@@ -1,0 +1,217 @@
+:root {
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  color: #17201a;
+  background: #eef3ef;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-width: 20rem;
+  min-height: 100vh;
+  margin: 0;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.grid {
+  display: grid;
+}
+
+.contents {
+  display: contents;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+.gap-4 {
+  gap: 1rem;
+}
+
+.grid-cols-1 {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.grid-cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.form-group-membership-fixture {
+  min-height: 100vh;
+  padding: 2.5rem;
+  background: #eef3ef;
+}
+
+.fixture-form {
+  width: min(100%, 64rem);
+  margin: 0 auto;
+  padding: 2rem;
+  border: 1px solid #c7d2ca;
+  border-radius: 0.75rem;
+  background: #fff;
+  box-shadow: 0 1rem 2.5rem rgb(31 48 37 / 9%);
+}
+
+.fixture-heading {
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #dce4de;
+}
+
+.fixture-heading h1,
+.fixture-heading p,
+.fixture-eyebrow {
+  margin: 0;
+}
+
+.fixture-heading h1 {
+  font-size: 1.75rem;
+  line-height: 1.25;
+}
+
+.fixture-heading > p:last-child {
+  color: #526158;
+}
+
+.fixture-eyebrow {
+  color: #2f7048;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+fieldset.fixture-group,
+legend.fixture-group-legend,
+h2.fixture-group-heading {
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  color: inherit;
+  border: 0;
+  font: inherit;
+  text-align: inherit;
+}
+
+.fixture-group-title {
+  display: block;
+  width: 100%;
+  margin: 1rem 0 0;
+  padding: 0 0 0.5rem;
+  color: #25352b;
+  border: 0;
+  border-bottom: 2px solid #88a993;
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.fixture-field {
+  align-content: start;
+}
+
+.fixture-label {
+  color: #2d3b32;
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.fixture-control {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.625rem 0.75rem;
+  color: #17201a;
+  border: 1px solid #96a69b;
+  border-radius: 0.375rem;
+  background: #fff;
+  line-height: 1.4;
+}
+
+select.fixture-control {
+  appearance: none;
+  padding-right: 2.75rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='m4 6 4 4 4-4' stroke='%23526158' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.875rem center;
+  background-size: 1rem;
+}
+
+textarea.fixture-control {
+  resize: vertical;
+}
+
+.fixture-control:hover {
+  border-color: #627568;
+}
+
+.fixture-control:focus-visible,
+.fixture-submit:focus-visible {
+  outline: 3px solid rgb(65 143 94 / 32%);
+  outline-offset: 2px;
+}
+
+.fixture-control:focus-visible {
+  border-color: #276943;
+}
+
+.fixture-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 0.75rem;
+}
+
+.fixture-submit {
+  min-height: 2.75rem;
+  padding: 0.625rem 1.25rem;
+  color: #fff;
+  border: 1px solid #225c3a;
+  border-radius: 0.375rem;
+  background: #276943;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.fixture-submit:hover {
+  background: #1f5837;
+}
+
+.fixture-confirmation {
+  padding: 0.875rem 1rem;
+  color: #1f5837;
+  border: 1px solid #9bc3a8;
+  border-radius: 0.375rem;
+  background: #edf8f0;
+  font-weight: 700;
+}
+
+@media (max-width: 40rem) {
+  .form-group-membership-fixture {
+    padding: 1.25rem;
+  }
+
+  .fixture-form {
+    padding: 1.25rem;
+  }
+
+  .grid-cols-2 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+

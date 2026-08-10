@@ -1,0 +1,26 @@
+{
+  "experimentTitle": "Form group membership reconstruction",
+  "experimentDescription": "Compare complete control-to-group reconstruction across semantic-first and presentation-first HTML.",
+  "fixtures": [
+    {
+      "fixtureId": "person-context-semantic-first",
+      "fixtureVersion": "v1",
+      "description": "Person-context groups use fieldset and legend semantics."
+    },
+    {
+      "fixtureId": "person-context-presentation-first",
+      "fixtureVersion": "v1",
+      "description": "Person-context groups use headings and layout rows."
+    },
+    {
+      "fixtureId": "purpose-context-semantic-first",
+      "fixtureVersion": "v1",
+      "description": "Purpose-context groups use fieldset and legend semantics."
+    },
+    {
+      "fixtureId": "purpose-context-presentation-first",
+      "fixtureVersion": "v1",
+      "description": "Purpose-context groups use headings and layout rows."
+    }
+  ]
+}
