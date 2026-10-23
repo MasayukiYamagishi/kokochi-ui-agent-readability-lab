@@ -1,0 +1,10 @@
+FROM alpine:3.23 AS truststore
+RUN apk add --no-cache ca-certificates && apk upgrade --no-cache ca-certificates
+
+FROM grafana/otel-lgtm:0.37.0
+COPY --from=truststore /etc/ssl/certs/ca-certificates.crt /etc/ssl/security-roots/ca-certificates.crt
+ENV SSL_CERT_FILE=/etc/ssl/security-roots/ca-certificates.crt
+ENV SSL_CERT_DIR=/etc/ssl/security-roots
+ENV CURL_CA_BUNDLE=/etc/ssl/security-roots/ca-certificates.crt
+ENV REQUESTS_CA_BUNDLE=/etc/ssl/security-roots/ca-certificates.crt
+ENV GRPC_DEFAULT_SSL_ROOTS_FILE_PATH=/etc/ssl/security-roots/ca-certificates.crt

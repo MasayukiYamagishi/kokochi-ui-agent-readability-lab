@@ -46,7 +46,7 @@ metrics、logsも記録します。
 ```powershell
 pnpm install --frozen-lockfile
 uv sync --dev
-uv run playwright install chromium
+pnpm playwright:install
 ```
 
 ## Fixtureを確認する
