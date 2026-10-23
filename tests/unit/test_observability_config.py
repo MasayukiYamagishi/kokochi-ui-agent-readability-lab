@@ -72,10 +72,10 @@ def test_compose_pins_images_and_binds_observability_ports_to_loopback() -> None
     compose = load_yaml("compose.yaml")
     services = compose["services"]
 
-    assert services["lgtm"]["image"] == "grafana/otel-lgtm:0.27.1"
+    assert services["lgtm"]["image"] == "kokochi-lab/otel-lgtm:0.37.0-ca-20261023"
     assert (
         services["otel-collector"]["image"]
-        == "kokochi-lab/otel-collector:0.156.0-healthcheck-v1"
+        == "kokochi-lab/otel-collector:0.163.2-healthcheck-v1"
     )
     assert services["otel-collector"]["healthcheck"]["test"] == [
         "CMD",

@@ -228,3 +228,27 @@ def fixture_preview_url(fixture_preview_base_url: str) -> FixtureUrl:
     """Resolve fixture URLs against the local production preview server."""
 
     return create_fixture_url(fixture_preview_base_url)
+
+
+def pytest_sessionstart(session: pytest.Session) -> None:
+    """Use patched Node for Playwright instead of its older bundled runtime."""
+    import os
+    import shutil
+    import subprocess
+
+    node = os.environ.get("PLAYWRIGHT_NODEJS_PATH") or shutil.which("node")
+    if not node:
+        raise pytest.UsageError(
+            "Playwright requires Node.js 24.22.1 or newer in the 24.x line"
+        )
+    result = subprocess.run(
+        [node, "--version"], check=True, capture_output=True, text=True
+    )
+    version = tuple(
+        int(part) for part in result.stdout.strip().removeprefix("v").split(".")
+    )
+    if version[0] != 24 or version < (24, 22, 1):
+        raise pytest.UsageError(
+            "Playwright requires Node.js 24.22.1 or newer in the 24.x line"
+        )
+    os.environ["PLAYWRIGHT_NODEJS_PATH"] = node
